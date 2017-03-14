@@ -1,5 +1,8 @@
 <?php
 	include('session.php');
+	$comments_stmt = $db->prepare("SELECT c.*, u.username FROM comments c INNER JOIN users u ON c.user_id = u.id");
+	$comments_stmt->execute();
+	$comments = $comments_stmt->get_result();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,29 +58,22 @@
 						</form>
 					</div>
 
-					<div class="media">
-						<a class="pull-left" href="#">
-							<img class="media-object" src="images/admin.png">
-						</a>
-						<div class="media-body">
-							<h4 class="media-heading">admin
-								<small>March 17, 2017 at 12:10</small>
-							</h4>
-							Please leave some comments
-						</div>
-					</div>
-
-					<div class="media">
-						<a class="pull-left" href="#">
-							<img class="media-object" src="images/attacker.png" alt="">
-						</a>
-						<div class="media-body">
-							<h4 class="media-heading">attacker
-								<small>March 17, 2017 at 19:15</small>
-							</h4>
-							Great blog post!
-						</div>
-					</div>
+					<?php if ($comments && $comments->num_rows > 0) {
+						while($comment = $comments->fetch_assoc()) { ?>
+							<div class="media">
+								<a class="pull-left" href="#">
+									<img class="media-object" src="images/<?php echo $comment['username']; ?>.png">
+								</a>
+								<div class="media-body">
+									<h4 class="media-heading"><?php echo $comment['username']; ?>
+										<small><?php echo date('F j, Y \a\t H:i', strtotime($comment['created_at'])); ?></small>
+									</h4>
+									<?php echo $comment['content']; ?>
+								</div>
+							</div>
+					<?php }
+					}
+					?>
 
 				</div>
 			</div>
