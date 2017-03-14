@@ -15,7 +15,7 @@
 			$row = $result->fetch_assoc();
 			if (password_verify($password, $row['password'])) {
 				$_SESSION['current_user'] = $username;
-				header("location: welcome.php");
+				header("location: blog.php");
 			} else {
 				$error = "Your username or password is invalid";
 			}
