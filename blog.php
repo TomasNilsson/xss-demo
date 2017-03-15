@@ -1,8 +1,15 @@
 <?php
 	include('session.php');
-	$comments_stmt = $db->prepare("SELECT c.*, u.username FROM comments c INNER JOIN users u ON c.user_id = u.id");
-	$comments_stmt->execute();
-	$comments = $comments_stmt->get_result();
+	if (isset($_POST['comment'])) {
+		$comment = $_POST['comment'];
+		$current_date = date('Y-m-d H:i:s');
+		$insert_stmt = $db->prepare("INSERT INTO comments (content, created_at, user_id) VALUES (?, ?, ?)");
+		$insert_stmt->bind_param('sss', $comment, $current_date, $userid); 
+		$insert_stmt->execute();
+	}
+	$select_stmt = $db->prepare("SELECT c.*, u.username FROM comments c INNER JOIN users u ON c.user_id = u.id");
+	$select_stmt->execute();
+	$comments = $select_stmt->get_result();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,7 +36,7 @@
 		<div class="container">
 			
 			<div class="blog-header">
-				<h1>Welcome <?php echo $current_user ?></h1>
+				<h1>Welcome <?php echo $username ?></h1>
 				<a href="logout.php"><button type="button" class="btn btn-primary">Log Out</button></a>
 			</div>
 
@@ -50,9 +57,9 @@
 
 					<div class="well">
 						<h4>Leave a Comment:</h4>
-						<form role="form">
+						<form method="post" action="">
 							<div class="form-group">
-								<textarea class="form-control" rows="3"></textarea>
+								<textarea class="form-control" rows="3" name="comment" ></textarea>
 							</div>
 							<button type="submit" class="btn btn-primary">Submit</button>
 						</form>

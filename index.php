@@ -5,7 +5,7 @@
 	if (isset($_POST['username']) and isset($_POST['password'])) {
 		$username = $_POST['username'];
 		$password = $_POST['password'];
-		$stmt = $db->prepare("SELECT password FROM users WHERE username = ?");
+		$stmt = $db->prepare("SELECT id, password FROM users WHERE username = ?");
 		$stmt->bind_param('s', $username);
 		$stmt->execute();
 		$result = $stmt->get_result();
@@ -14,7 +14,8 @@
 		} else {
 			$row = $result->fetch_assoc();
 			if (password_verify($password, $row['password'])) {
-				$_SESSION['current_user'] = $username;
+				$_SESSION['username'] = $username;
+				$_SESSION['userid'] = $row['id'];
 				header("location: blog.php");
 			} else {
 				$error = "Your username or password is invalid";

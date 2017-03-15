@@ -2,8 +2,9 @@
 	include('db/config.php');
 	session_start();
 
-	if (isset($_SESSION['current_user'])){
-		$current_user = $_SESSION['current_user'];
+	if (isset($_SESSION['username'])){
+		$username = $_SESSION['username'];
+		$userid = $_SESSION['userid'];
 	} else {
 		header("location: index.php");
 	}
